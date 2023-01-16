@@ -23,23 +23,32 @@ public class Inquire extends JFrame{
 	private JTable table = new JTable(model);
 	private JScrollPane ScrollPane;
 	private JPanel panel;
-	public Inquire(String title) {
+	String type;
+	
+	public Inquire(String title, String type) {
+		this.type = type;
+		System.out.println(type +"-수강신청자 조회");
 		setTitle(title);
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocation(300, 200);
-		setSize(300, 200);
+		setSize(500, 300);
 		setLayout(new BorderLayout());
 		
 		panel = new JPanel();
 		panel.setLayout(null);
 		panel.setPreferredSize(new Dimension(500,40));
-		JLabel lbltitle = new JLabel("전체 수강자 목록");
+		JLabel lbltitle = new JLabel(type+"신청자 조회");
 		lbltitle.setBounds(50, 10, 150, 20);
 		panel.add(lbltitle);
 		
 		add(panel,BorderLayout.NORTH);
 		table();
-		
+		try {
+			showtable(this);
+		} catch (SQLException e) {
+			System.out.println("테이블 오류");
+			e.printStackTrace();
+		}
 	
 		
 		setVisible(true);
@@ -50,7 +59,6 @@ public class Inquire extends JFrame{
 		table.getColumnModel().getColumn(1).setPreferredWidth(30);
 		table.getColumnModel().getColumn(2).setPreferredWidth(30);
 		table.getColumnModel().getColumn(3).setPreferredWidth(30);
-		table.getColumnModel().getColumn(4).setPreferredWidth(30);
 		ScrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		ScrollPane.setPreferredSize(new Dimension(450,200));
@@ -61,27 +69,29 @@ public class Inquire extends JFrame{
 		return model;
 	}
 	
-	public static void main(String[] args) {
-		Inquire iq = new Inquire("수강신청자 조회");
-	}
+//	public static void main(String[] args) {
+//		Inquire iq = new Inquire("수강신청자 조회");
+//	}
 	
-	public void showtable(Inquire inquire,String ID) throws SQLException{
-		String sql = "SELECT * FROM user WHERE userID = '"+ID+"'";
-		ResultSet rs;
+	public void showtable(Inquire inquire) throws SQLException{
+		
+		ResultSet rs,rs1;
 		try {
+			String sql = "SELECT id FROM study WHERE "+type+"='1'";
 			rs = DB.getResultSet(sql);
-			String TYPE = rs.getString("type");
-			String sql2 = "SELECT id FROM study WHERE word='"+TYPE+"' OR java='"+TYPE+"'"
-					+ "OR excel='"+TYPE+"' OR ppt='"+TYPE+"'";
-			String sql3 = "SELECT * FROM student";
-			rs = DB.getResultSet(sql2);
-			inquire.getModel().setNumRows(0);
 			while(rs.next()) {
-				String[] imsi = {rs.getString("studentID"),rs.getString("name"),rs.getString("type"),rs.getString("sin")};
+			String id = rs.getString("id");
+			
+			String sql2 = "SELECT * FROM student WHERE studentID ='"+id+"'";
+			rs1 = DB.getResultSet(sql2);
+//			inquire.getModel().setNumRows(0);
+			while(rs1.next()) {
+				String[] imsi = {rs1.getString("studentID"),rs1.getString("name"),rs1.getString("type"),rs1.getString("sin")};
 				inquire.getModel().addRow(imsi);
-			}	
+				}	
+			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			System.out.println("테이블 생성 실패");
 			e.printStackTrace();
 		}
 	}

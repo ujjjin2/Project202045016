@@ -18,14 +18,16 @@ public class Menu extends JFrame implements ActionListener{
 
 	private JButton btn1;
 	private JButton btn2;
-
-	public Menu(String title) {
+	String type;
+	
+	public Menu(String title, String type) {
+		this.type = type;
 		setTitle(title);
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocation(300, 200);
 		setSize(250, 200);
 		setLayout(new BorderLayout());
-		
+		System.out.println(type+"-메뉴");
 		setPanelCenter();
 		
 		setVisible(true);
@@ -52,17 +54,17 @@ public class Menu extends JFrame implements ActionListener{
 		
 	}
 
-	public static void main(String[] args) {
-		Menu main = new Menu("강사메뉴");
-	}
+//	public static void main(String[] args) {
+//		Menu main = new Menu("강사메뉴");
+//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if (obj == btn1) {
-			Inquire iq = new Inquire("수강신청자 조회");
+			Inquire iq = new Inquire("수강신청자 조회", type);
 		}else if (obj ==btn2) {
-			Register rs = new Register("점수등록");
+			Register rs = new Register("점수등록", type);
 		}
 		
 	}

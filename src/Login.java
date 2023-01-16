@@ -23,6 +23,8 @@ public class Login extends JFrame implements ActionListener{
 	private JButton btncancle;
 	private String ID;
 	private String PW;
+	private String type;
+	
 	public Login(String title) {
 		setTitle(title);
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,7 +38,7 @@ public class Login extends JFrame implements ActionListener{
 		JLabel lblId = new JLabel("ID");
 		lblId.setBounds(40, 30, 50, 20);
 		panelCenter.add(lblId);
-		tfID = new JTextField(15);
+		tfID = new JTextField("runa2021");
 		tfID.addActionListener(this);
 		tfID.setBounds(80, 30, 150, 20);
 		panelCenter.add(tfID);
@@ -44,7 +46,7 @@ public class Login extends JFrame implements ActionListener{
 		JLabel lblpw = new JLabel("PW");
 		lblpw.setBounds(35, 70, 50, 20);
 		panelCenter.add(lblpw);
-		tfPW = new JTextField(15);
+		tfPW = new JTextField("1234");
 		tfPW.addActionListener(this);
 		tfPW.setBounds(80, 70, 150, 20);
 		panelCenter.add(tfPW);
@@ -81,16 +83,17 @@ public class Login extends JFrame implements ActionListener{
 	}
 	
 	public void login(String ID2,String PW2) {
-		String sql = "SELECT userid,password FROM user WHERE userid = '" + ID2 + "'";
+		String sql = "SELECT userid,password,type FROM user WHERE userid = '" + ID2 + "'";
 		try {
 			ResultSet rs = DB.getResultSet(sql);
 			if (rs.next()) {
 				String id = rs.getString("userid");
 				String pw = rs.getString("password");
+				type = rs.getString("type");
 				
 				if (ID2.equals(id) && PW2.equals(pw)) {
 					JOptionPane.showMessageDialog(null, "로그인을 완료하였습니다","메세지",JOptionPane.INFORMATION_MESSAGE);
-					Menu menu = new Menu("강사메뉴");
+					Menu menu = new Menu("강사메뉴",type);
 					dispose();
 					System.out.println("로그인 성공");
 				}else {
@@ -101,6 +104,7 @@ public class Login extends JFrame implements ActionListener{
 					System.out.println("로그인 입력 실수");
 				}
 			}
+			
 		} catch (Exception e) {
 			System.out.println("로그인 실패");
 			e.printStackTrace();
