@@ -19,6 +19,8 @@ public class Login2 extends JFrame implements ActionListener{
 	private JTextField tfPW;
 	private JButton btnok;
 	private JButton btncancle;
+	private String ID;
+	private String name;
 	public Login2(String title) {
 		setTitle(title);
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,7 +34,7 @@ public class Login2 extends JFrame implements ActionListener{
 		JLabel lblId = new JLabel("ID");
 		lblId.setBounds(40, 30, 50, 20);
 		panelCenter.add(lblId);
-		tfID = new JTextField(15);
+		tfID = new JTextField("love01");
 		tfID.addActionListener(this);
 		tfID.setBounds(80, 30, 150, 20);
 		panelCenter.add(tfID);
@@ -40,7 +42,7 @@ public class Login2 extends JFrame implements ActionListener{
 		JLabel lblpw = new JLabel("PW");
 		lblpw.setBounds(35, 70, 50, 20);
 		panelCenter.add(lblpw);
-		tfPW = new JTextField(15);
+		tfPW = new JTextField("love1234");
 		tfPW.addActionListener(this);
 		tfPW.setBounds(80, 70, 150, 20);
 		panelCenter.add(tfPW);
@@ -68,7 +70,7 @@ public class Login2 extends JFrame implements ActionListener{
 		if (obj == btncancle) {
 			dispose();
 		}else if (obj == btnok) {
-			String ID = tfID.getText();
+			ID = tfID.getText();
 			String PW = tfPW.getText();
 			login(ID,PW);
 		}
@@ -76,16 +78,17 @@ public class Login2 extends JFrame implements ActionListener{
 	}
 	
 	public void login(String ID2,String PW2) {
-		String sql = "SELECT studentID,password FROM student WHERE studentID = '" + ID2 + "'";
+		String sql = "SELECT * FROM student WHERE studentID = '" + ID2 + "'";
 		try {
 			ResultSet rs = DB.getResultSet(sql);
 			if (rs.next()) {
 				String id = rs.getString("studentID");
 				String pw = rs.getString("password");
+				name = rs.getString("name");
 				
 				if (ID2.equals(id) && PW2.equals(pw)) {
 					JOptionPane.showMessageDialog(null, "로그인을 완료하였습니다","메세지",JOptionPane.INFORMATION_MESSAGE);
-					Menu2 menu2 = new Menu2("수강자 메뉴");
+					Menu2 menu2 = new Menu2("수강자 메뉴",ID, name);
 					dispose();
 					System.out.println("로그인 성공");
 				}else {

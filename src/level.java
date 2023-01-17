@@ -3,17 +3,29 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import java.util.Iterator;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-public class level extends JFrame{
-	public level(String title) {
+public class level extends JFrame implements ActionListener{
+	String ID;
+	JRadioButton radio[] = new JRadioButton[4];
+	JRadioButton radio2[] = new JRadioButton[4];
+	JRadioButton radio3[] = new JRadioButton[4];
+	JRadioButton radio4[] = new JRadioButton[4];
+	private JButton btn;
+	
+	public level(String title, String ID) {
+		this.ID = ID;
 		setTitle(title);
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocation(300, 100);
@@ -52,7 +64,6 @@ public class level extends JFrame{
 			panelLevel.add(lbllevel);
 			
 			//word
-			JRadioButton radio[] = new JRadioButton[4];
 			ButtonGroup group1 = new ButtonGroup();
 			for (int i = 0; i < radio.length; i++) {
 					radio[i] = new JRadioButton();
@@ -66,8 +77,8 @@ public class level extends JFrame{
 			radio[2].setBounds(65, 52, 20, 20);
 			radio[3].setBounds(100, 52, 20, 20);
 			
+			
 			//java
-			JRadioButton radio2[] = new JRadioButton[4];
 			ButtonGroup group2 = new ButtonGroup();
 			for (int i = 0; i < radio2.length; i++) {
 					radio2[i] = new JRadioButton();
@@ -82,7 +93,6 @@ public class level extends JFrame{
 			radio2[3].setBounds(100, 100, 20, 20);
 
 			//Excel
-			JRadioButton radio3[] = new JRadioButton[4];
 			ButtonGroup group3 = new ButtonGroup();
 			for (int i = 0; i < radio3.length; i++) {
 					radio3[i] = new JRadioButton();
@@ -97,8 +107,7 @@ public class level extends JFrame{
 			radio3[2].setBounds(65, 150, 20, 20);
 			radio3[3].setBounds(100, 150, 20, 20);
 			
-			//Excel
-			JRadioButton radio4[] = new JRadioButton[4];
+			//ppt
 			ButtonGroup group4 = new ButtonGroup();
 			for (int i = 0; i < radio4.length; i++) {
 				radio4[i] = new JRadioButton();
@@ -120,13 +129,73 @@ public class level extends JFrame{
 		
 		
 		JPanel panelButton = new JPanel();
-		JButton btn = new JButton("입력");
+		btn = new JButton("입력");
+		btn.addActionListener(this);
 		panelButton.add(btn);
 		add(panelButton,BorderLayout.SOUTH);
+		
+		radioEnable();
 		
 		setVisible(true);
 	}
 	public static void main(String[] args) {
-		level sc = new level("수강수준");
+		DB.init();
+		level sc = new level("수강수준","naver135");
+	}
+	
+	public void radioEnable() {
+		String sql = "Select * from study where id='"+ID+"'";
+		ResultSet rs;
+		try {
+			rs = DB.getResultSet(sql);
+			while (rs.next()) {
+				int word= rs.getInt("word");
+				int java= rs.getInt("java");
+				int excel= rs.getInt("excel");
+				int ppt= rs.getInt("ppt");
+				
+				if (word ==1) {
+					for (int i = 0; i < radio.length; i++) {
+						radio[i].setEnabled(true);
+					}
+				}else if (java ==1) {
+					for (int i = 0; i < radio2.length; i++) {
+						radio2[i].setEnabled(true);
+					}
+				}else if (excel ==1) {
+					for (int i = 0; i < radio3.length; i++) {
+						radio3[i].setEnabled(true);
+					}
+				}else if (ppt ==1) {
+					for (int i = 0; i < radio4.length; i++) {
+						radio4[i].setEnabled(true);
+					}
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	//정보 추가/수정
+		public void ChangeInfo(String sql) {
+			try {
+				DB.executeQuery(sql);
+			} catch (Exception e) {
+				System.out.println("DB문제");
+				e.printStackTrace();
+			}
+		}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object obj = e.getSource();
+		if (obj == btn) {
+			String sql="Insert Into slimit(id,word,java,excel,ppt) values ('"+ID+"',?,?,?,?)";
+			ChangeInfo(sql);
+			JOptionPane.showMessageDialog(btn, "과목이 선택되었습니다.","메시지",JOptionPane.INFORMATION_MESSAGE);
+		}
+		
 	}
 }

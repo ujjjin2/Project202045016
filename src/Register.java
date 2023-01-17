@@ -86,7 +86,7 @@ public class Register extends JFrame implements ActionListener{
 		
 	}
 	
-	//확인을 누르면 정보가 디비에 저장됨
+	//DB업데이트
 	public void insertScore(String sql) {
 		try {
 			DB.executeQuery(sql);
