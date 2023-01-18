@@ -23,6 +23,14 @@ public class level extends JFrame implements ActionListener{
 	JRadioButton radio3[] = new JRadioButton[4];
 	JRadioButton radio4[] = new JRadioButton[4];
 	private JButton btn;
+	private ButtonGroup group3;
+	private ButtonGroup group2;
+	private ButtonGroup group1;
+	private ButtonGroup group4;
+	private String word;
+	private String java;
+	private String excel;
+	private String ppt;
 	
 	public level(String title, String ID) {
 		this.ID = ID;
@@ -31,6 +39,9 @@ public class level extends JFrame implements ActionListener{
 		setLocation(300, 100);
 		setSize(320, 320);
 		setLayout(new BorderLayout());
+		
+		String sql3 ="INSERT INTO result(id,word,java,excel,ppt) VALUES ('"+ID+"',0,0,0,0)";
+		ChangeInfo(sql3);
 		
 		JPanel panelCenter = new JPanel();
 		panelCenter.setLayout(new BorderLayout());
@@ -64,7 +75,7 @@ public class level extends JFrame implements ActionListener{
 			panelLevel.add(lbllevel);
 			
 			//word
-			ButtonGroup group1 = new ButtonGroup();
+			group1 = new ButtonGroup();
 			for (int i = 0; i < radio.length; i++) {
 					radio[i] = new JRadioButton();
 					group1.add(radio[i]);
@@ -79,7 +90,7 @@ public class level extends JFrame implements ActionListener{
 			
 			
 			//java
-			ButtonGroup group2 = new ButtonGroup();
+			group2 = new ButtonGroup();
 			for (int i = 0; i < radio2.length; i++) {
 					radio2[i] = new JRadioButton();
 					group2.add(radio2[i]);
@@ -93,7 +104,7 @@ public class level extends JFrame implements ActionListener{
 			radio2[3].setBounds(100, 100, 20, 20);
 
 			//Excel
-			ButtonGroup group3 = new ButtonGroup();
+			group3 = new ButtonGroup();
 			for (int i = 0; i < radio3.length; i++) {
 					radio3[i] = new JRadioButton();
 					group3.add(radio3[i]);
@@ -108,7 +119,7 @@ public class level extends JFrame implements ActionListener{
 			radio3[3].setBounds(100, 150, 20, 20);
 			
 			//ppt
-			ButtonGroup group4 = new ButtonGroup();
+			group4 = new ButtonGroup();
 			for (int i = 0; i < radio4.length; i++) {
 				radio4[i] = new JRadioButton();
 				group4.add(radio4[i]);
@@ -140,7 +151,7 @@ public class level extends JFrame implements ActionListener{
 	}
 	public static void main(String[] args) {
 		DB.init();
-		level sc = new level("수강수준","naver135");
+		level sc = new level("수강수준","mobile010");
 	}
 	
 	public void radioEnable() {
@@ -148,7 +159,7 @@ public class level extends JFrame implements ActionListener{
 		ResultSet rs;
 		try {
 			rs = DB.getResultSet(sql);
-			while (rs.next()) {
+			if (rs.next()) {
 				int word= rs.getInt("word");
 				int java= rs.getInt("java");
 				int excel= rs.getInt("excel");
@@ -158,15 +169,18 @@ public class level extends JFrame implements ActionListener{
 					for (int i = 0; i < radio.length; i++) {
 						radio[i].setEnabled(true);
 					}
-				}else if (java ==1) {
+				}
+				if (java ==1) {
 					for (int i = 0; i < radio2.length; i++) {
 						radio2[i].setEnabled(true);
 					}
-				}else if (excel ==1) {
+				}
+				if (excel ==1) {
 					for (int i = 0; i < radio3.length; i++) {
 						radio3[i].setEnabled(true);
 					}
-				}else if (ppt ==1) {
+				}
+				if (ppt ==1) {
 					for (int i = 0; i < radio4.length; i++) {
 						radio4[i].setEnabled(true);
 					}
@@ -192,10 +206,113 @@ public class level extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		Object obj = e.getSource();
 		if (obj == btn) {
-			String sql="Insert Into slimit(id,word,java,excel,ppt) values ('"+ID+"',?,?,?,?)";
-			ChangeInfo(sql);
-			JOptionPane.showMessageDialog(btn, "과목이 선택되었습니다.","메시지",JOptionPane.INFORMATION_MESSAGE);
+				int j=0;
+				for (int i = 0; i < radio.length; i++) {
+					if (radio[i].isSelected()) {
+						switch (i) {
+						case 0: 
+							word = "초급";
+							break;
+						case 1: 
+							word = "중급";
+							break;
+						case 2: 
+							word = "고급";
+							break;
+						case 3: 
+							word = "전문가";
+							break;
+						default:
+							word = "오류";
+							break;
+						}
+						j+=1;
+					}else if(j!=1){
+						word = "신청안함";						
+					}
+				}
+				j=0;
+				for (int i = 0; i < radio2.length; i++) {
+					if (radio2[i].isSelected()) {
+						switch (i) {
+						case 0: 
+							java = "초급";
+							break;
+						case 1: 
+							java = "중급";
+							break;
+						case 2: 
+							java = "고급";
+							break;
+						case 3: 
+							java = "전문가";
+							break;
+						default:
+							java = "오류";
+							break;
+						}
+						j+=1;
+					}else if(j!=1){
+						java = "신청안함";						
+					}
+				}
+				j=0;
+				for (int i = 0; i < radio3.length; i++) {
+					if (radio3[i].isSelected()) {
+						switch (i) {
+						case 0: 
+							excel = "초급";
+							break;
+						case 1: 
+							excel = "중급";
+							break;
+						case 2: 
+							excel = "고급";
+							break;
+						case 3: 
+							excel = "전문가";
+							break;
+						default:
+							excel = "오류";
+							break;
+						}
+						j+=1;
+					}else if(j!=1){
+						excel = "신청안함";						
+					}
+				}
+				j=0;
+				for (int i = 0; i < radio4.length; i++) {
+					if (radio4[i].isSelected()) {
+						switch (i) {
+						case 0: 
+							ppt = "초급";
+							break;
+						case 1: 
+							ppt = "중급";
+							break;
+						case 2: 
+							ppt = "고급";
+							break;
+						case 3: 
+							ppt = "전문가";
+							break;
+						default:
+							ppt = "오류";
+							break;
+						}
+						j +=1;
+					}else if(j!=1) {
+						ppt = "신청안함";						
+					}
+				}
+				String sql2 ="INSERT INTO slimit(id,word,java,excel,ppt) VALUES ('"+ID+"','"+word+"','"+java+"','"+excel+"','"+ppt+"')";
+				ChangeInfo(sql2);
+				System.out.println("등록됨");
+				JOptionPane.showMessageDialog(btn, "과목이 선택되었습니다.","메시지",JOptionPane.INFORMATION_MESSAGE);
+			}
 		}
 		
+		
 	}
-}
+	

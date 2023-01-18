@@ -14,7 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 public class Inquire extends JFrame{
 	private String[] title = {"ID", "이름","학과","학년"};
@@ -59,6 +62,21 @@ public class Inquire extends JFrame{
 		table.getColumnModel().getColumn(1).setPreferredWidth(30);
 		table.getColumnModel().getColumn(2).setPreferredWidth(30);
 		table.getColumnModel().getColumn(3).setPreferredWidth(30);
+		
+		//DafaultTableCellHeaderRenderer 생성 (가운데 정렬을 위한)
+		DefaultTableCellRenderer tableCellRenderer = new DefaultTableCellRenderer();
+						
+		//DfaultTableCellHeaderRender의 정렬을 가운데 정렬로 지정
+		tableCellRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+						
+		//정렬할 테이블의 ColumnModel 을 가져옴, 2022-10-28
+		TableColumnModel tableColumnModel = table.getColumnModel();
+						
+		//반복문을 이용하여 테이블 가운데 정렬로 지정, 2022-10-28
+			for (int i = 0; i < tableColumnModel.getColumnCount(); i++) {
+				tableColumnModel.getColumn(i).setCellRenderer(tableCellRenderer);
+			}
+		
 		ScrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		ScrollPane.setPreferredSize(new Dimension(450,200));
@@ -77,7 +95,7 @@ public class Inquire extends JFrame{
 		
 		ResultSet rs,rs1;
 		try {
-			String sql = "SELECT id FROM study WHERE "+type+"='1'";
+			String sql = "SELECT id FROM study WHERE "+type+"=1";
 			rs = DB.getResultSet(sql);
 			while(rs.next()) {
 			String id = rs.getString("id");

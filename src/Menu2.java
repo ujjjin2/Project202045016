@@ -95,6 +95,8 @@ public class Menu2 extends JFrame implements ActionListener{
 				Deleteinfo(sql);
 				String sql2 = "DELETE FROM result WHERE id='"+ID+"'";
 				Deleteinfo(sql2);
+				String sql3 = "DELETE FROM slimit WHERE id='"+ID+"'";
+				Deleteinfo(sql3);
 				JOptionPane.showMessageDialog(btn3, "수강취소가 완료되었습니다.","메시지",JOptionPane.INFORMATION_MESSAGE);
 				dispose();
 				Menu2 m2 = new Menu2("수강자 메뉴",ID,name);

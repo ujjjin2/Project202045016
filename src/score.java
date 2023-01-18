@@ -13,7 +13,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 public class score extends JFrame implements ActionListener{
 	
@@ -66,6 +69,21 @@ public class score extends JFrame implements ActionListener{
 		table.getColumnModel().getColumn(0).setPreferredWidth(30);
 		table.getColumnModel().getColumn(1).setPreferredWidth(30);
 		table.getColumnModel().getColumn(2).setPreferredWidth(30);
+		
+		//DafaultTableCellHeaderRenderer 생성 (가운데 정렬을 위한)
+		DefaultTableCellRenderer tableCellRenderer = new DefaultTableCellRenderer();
+						
+		//DfaultTableCellHeaderRender의 정렬을 가운데 정렬로 지정
+		tableCellRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+						
+		//정렬할 테이블의 ColumnModel 을 가져옴, 2022-10-28
+		TableColumnModel tableColumnModel = table.getColumnModel();
+						
+		//반복문을 이용하여 테이블 가운데 정렬로 지정, 2022-10-28
+			for (int i = 0; i < tableColumnModel.getColumnCount(); i++) {
+				tableColumnModel.getColumn(i).setCellRenderer(tableCellRenderer);
+			}
+
 		ScrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		ScrollPane.setPreferredSize(new Dimension(300,100));
@@ -82,19 +100,23 @@ public class score extends JFrame implements ActionListener{
 	
 	public void showScoreTable(score score) throws SQLException {
 		String sql = "SELECT type,name FROM user";
-		ResultSet rs, rs2;
+		ResultSet rs, rs2,rs3;
 		try {
 			rs = DB.getResultSet(sql);
-			while(rs.next()) {
-				type = rs.getString("type");	
-			
-			String sql2 = "SELECT * FROM result WHERE id = '"+ID+"'";
-			rs2 = DB.getResultSet(sql2);
-			//score.getModel().setNumRows(0);
-			while(rs2.next()) {
-				String[] imsi = {type ,rs2.getString(type),rs.getString("name")};
-				score.getModel().addRow(imsi);
-				}	
+			while(rs.next()) {	
+			type = rs.getString("type");
+			String sql3 = "SELECT id FROM study WHERE "+type+"=1";
+			rs3 = DB.getResultSet(sql3);
+			while (rs3.next()) {
+				String id = rs3.getString("id");
+				String sql2 = "SELECT * FROM result WHERE id = '"+ID+"' and id ='"+id+"'";
+				rs2 = DB.getResultSet(sql2);
+				//score.getModel().setNumRows(0);
+				while(rs2.next()) {
+					String[] imsi = {type ,rs2.getString(type),rs.getString("name")};
+					score.getModel().addRow(imsi);
+				}		
+			}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
